@@ -451,7 +451,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     foreach($answers as $a) {
         if (!($v = $a->display()))
             continue;
-        $displayed[] = array($a->getLocal('label'), $v);
+        $displayed[] = array($a->getLocal('label'), $v, $a->getLocal('name'));
     }
     if (count($displayed) == 0)
         continue;
@@ -463,7 +463,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     <tbody>
 <?php
     foreach ($displayed as $stuff) {
-        list($label, $v) = $stuff;
+        list($label, $v, $name) = $stuff;
 ?>
         <tr>
             <td width="200"><?php
@@ -471,6 +471,9 @@ echo Format::htmlchars($label);
             ?>:</th>
             <td><?php
 echo $v;
+if ($name === "location") {
+    echo " → <a href=\"http://maps.google.com/maps?q=$v\" target=_blank>Map it</a>";
+}
             ?></td>
         </tr>
 <?php } ?>
