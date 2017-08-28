@@ -448,13 +448,21 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
         'field__name__in' => array('subject', 'priority')
     )));
     $displayed = array();
+    $address_fields = ["street_victim", "city_victim", "zip_victim"];
+    $address = "";
     foreach($answers as $a) {
         if (!($v = $a->display()))
             continue;
-        $displayed[] = array($a->getLocal('label'), $v, $a->getLocal('name'));
+        $fieldName = $a->getLocal('name');
+        $displayed[] = array($a->getLocal('label'), $v, $fieldName);
+        if (in_array($fieldName, $address_fields)) {
+            $address .= $v." ";
+        }
     }
-    if (count($displayed) == 0)
+    if (count($displayed) == 0) {
         continue;
+    }
+    $address = trim($address);
     ?>
     <table class="ticket_info custom-data" cellspacing="0" cellpadding="0" width="940" border="0">
     <thead>
@@ -471,8 +479,8 @@ echo Format::htmlchars($label);
             ?>:</th>
             <td><?php
 echo $v;
-if ($name === "location") {
-    echo " → <a href=\"http://maps.google.com/maps?q=$v\" target=_blank>Map it</a>";
+if ($name === $address_fields[0]) {
+    echo " → <a href=\"http://maps.google.com/maps?q=$address\" target=_blank>Map it</a>";
 }
             ?></td>
         </tr>
